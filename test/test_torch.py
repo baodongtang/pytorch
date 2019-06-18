@@ -8096,7 +8096,7 @@ class _TestTorchMixin(object):
         self.assertEqual(actual, expected, 0)
 
         # Bool test case
-        t = torch.tensor([[False, True],[True, True]])
+        t = torch.tensor([[False, True], [True, True]])
         self.assertEqual(torch.gather(t, 1, torch.tensor([[0, 0], [1, 0]])), torch.tensor([[False, False], [True, True]]))
 
     def test_gather(self):
