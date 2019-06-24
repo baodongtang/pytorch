@@ -274,6 +274,17 @@ Tensor logspace(
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ones ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+#ifdef NAMEDTENSOR_ENABLED
+Tensor ones(
+    IntArrayRef size,
+    at::optional<DimnameList> names,
+    const TensorOptions& options) {
+  auto result = at::ones(size, options);
+  internal_set_names_inplace(result, names);
+  return result;
+}
+#endif
+
 Tensor ones(IntArrayRef size, const TensorOptions& options) {
   return native::full(size, /*fill_value=*/1, options);
 }
@@ -297,6 +308,27 @@ Tensor scalar_tensor(Scalar s, const TensorOptions& options) {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ rand ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#ifdef NAMEDTENSOR_ENABLED
+Tensor rand(
+    IntArrayRef size,
+    at::optional<DimnameList> names,
+    const TensorOptions& options) {
+  auto result = at::rand(size, options);
+  internal_set_names_inplace(result, names);
+  return result;
+}
+
+Tensor rand(
+    IntArrayRef size,
+    Generator* generator,
+    at::optional<DimnameList> names,
+    const TensorOptions& options) {
+  auto result = at::rand(size, generator, options);
+  internal_set_names_inplace(result, names);
+  return result;
+}
+#endif
 
 Tensor rand(IntArrayRef size, const TensorOptions& options) {
   return native::rand(size, nullptr, options);
@@ -407,6 +439,27 @@ Tensor randint_like(
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ randn ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#ifdef NAMEDTENSOR_ENABLED
+Tensor randn(
+    IntArrayRef size,
+    at::optional<DimnameList> names,
+    const TensorOptions& options) {
+  auto result = at::randn(size, options);
+  internal_set_names_inplace(result, names);
+  return result;
+}
+
+Tensor randn(
+    IntArrayRef size,
+    Generator* generator,
+    at::optional<DimnameList> names,
+    const TensorOptions& options) {
+  auto result = at::randn(size, generator, options);
+  internal_set_names_inplace(result, names);
+  return result;
+}
+#endif
 
 Tensor randn(IntArrayRef size, const TensorOptions& options) {
   return native::randn(size, nullptr, options);
@@ -588,6 +641,17 @@ Tensor triu_indices_cpu(
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ zeros ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#ifdef NAMEDTENSOR_ENABLED
+Tensor zeros(
+    IntArrayRef size,
+    at::optional<DimnameList> names,
+    const TensorOptions& options) {
+  auto result = at::zeros(size, options);
+  internal_set_names_inplace(result, names);
+  return result;
+}
+#endif
 
 Tensor zeros(IntArrayRef size, const TensorOptions& options) {
   auto result = at::empty(size, options);
