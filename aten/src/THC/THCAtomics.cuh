@@ -96,7 +96,7 @@ static inline __device__ void atomicAdd(int64_t *address, int64_t val) {
 }
 
 static inline __device__ void atomicAdd(bool *address, bool val) {
-  AtomicAddIntegerImpl<bool, sizeof(bool)>()(address, val);
+  *address = address && val;
 }
 
 static inline  __device__ void atomicAdd(at::Half *address, at::Half val) {
