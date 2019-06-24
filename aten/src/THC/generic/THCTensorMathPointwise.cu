@@ -3,6 +3,9 @@
 #else
 
 #include <ATen/MemoryOverlap.h>
+#ifdef NAMEDTENSOR_ENABLED
+#include <ATen/NamedTensorUtils.h>
+#endif
 
 void THCTensor_(cbitand)(THCState* state, THCTensor *self_, THCTensor *src1, THCTensor *src2)
 {
@@ -172,6 +175,16 @@ void THCTensor_(cminValue)(THCState *state, THCTensor *self, THCTensor *src, sca
 
 #if !defined(THC_REAL_IS_BOOL)
 
+#ifdef NAMEDTENSOR_ENABLED
+#define PERFORM_NAME_INFERENCE                                          \
+    if (at::impl::internal_is_named(src)) {                             \
+      const auto names = at::impl::internal_get_names(src);             \
+      at::impl::internal_set_names_inplace(self_, names);               \
+    }
+#else
+#define PERFORM_NAME_INFERENCE
+#endif
+
 #define IMPLEMENT_CUDA_TENSOR_BASIC_FUNC_(NAME, CFUNC, REAL)             \
   struct Tensor_##NAME##_##REAL##_Op {                                  \
     __device__ __forceinline__ void operator()(scalar_t* out, scalar_t* in) const { \
@@ -199,6 +212,7 @@ void THCTensor_(cminValue)(THCState *state, THCTensor *self, THCTensor *src, sca
     }                                                                   \
                                                                         \
     THCudaCheck(cudaGetLastError());                                    \
+    PERFORM_NAME_INFERENCE;                                             \
   }
 
 #define IMPLEMENT_CUDA_TENSOR_BASIC_FUNC(NAME, CFUNC, REAL) \
@@ -242,6 +256,7 @@ IMPLEMENT_CUDA_TENSOR_BASIC_FUNC(  abs, THCNumerics<scalar_t>::abs,   Real)
 
 #undef IMPLEMENT_CUDA_TENSOR_BASIC_FUNC_
 #undef IMPLEMENT_CUDA_TENSOR_BASIC_FUNC
+#undef PERFORM_NAME_INFERENCE
 
 void THCTensor_(clamp)(THCState *state, THCTensor *self_, THCTensor *src, scalar_t min_value,
   scalar_t max_value)
