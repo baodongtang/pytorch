@@ -3466,6 +3466,22 @@ def foo(xyz):
         fc.run(scripted.graph)
         fc.run(str(scripted.graph))
 
+
+    def test_serialized_source_ranges(self):
+
+        class FooTest(torch.jit.ScriptModule):
+            @torch.jit.script_method
+            def forward(self, x, w):
+                return torch.mm(x, w.t())
+
+        ft = FooTest()
+        ft.save('foo.zip')
+        loaded = self.getExportImportCopy(ft)
+        _, lineno = inspect.getsourcelines(FooTest)
+
+        with self.assertRaisesRegex(RuntimeError, 'test_jit.py:{}'.format(lineno + 3)):
+            loaded(torch.rand(3, 4), torch.rand(30, 40))
+
     def test_tensor_shape(self):
         x = torch.empty(34, 56, 78)
 
