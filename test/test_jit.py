@@ -13202,8 +13202,6 @@ a")
         self.checkScript(fn, ({'hi': 2, 'bye': 3},))
         self.checkScript(fn, ({'bye': 3},))
 
-
-        # Check evaluation order
         @torch.jit.script
         def a():
             print("a")
